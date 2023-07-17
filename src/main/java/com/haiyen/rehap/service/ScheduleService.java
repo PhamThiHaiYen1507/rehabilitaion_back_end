@@ -11,7 +11,6 @@ import com.haiyen.rehap.repository.DoctorsRepository;
 import com.haiyen.rehap.repository.PatientsRepository;
 import com.haiyen.rehap.repository.ScheduleRepository;
 import com.haiyen.rehap.result.Result;
-import com.haiyen.rehap.result.Result.Status;
 
 @Service
 public class ScheduleService {
@@ -24,8 +23,8 @@ public class ScheduleService {
 	@Autowired
 	PatientsRepository patientsRepository;
 
-	public Result findByPatientId(int patientId) {
-		Result result = new Result();
+	public Result<List<Schedule>> findByPatientId(int patientId) {
+		Result<List<Schedule>> result = new Result<List<Schedule>>();
 		List<Schedule> scheduleList = scheduleRepo.findByPatientId(patientId);
 		if (scheduleList.isEmpty()) {
 			result.setMessage("Không có lịch hẹn khám bệnh");
@@ -34,8 +33,8 @@ public class ScheduleService {
 		return result;
 	}
 
-	public Result findByDoctorId(int doctorId) {
-		Result result = new Result();
+	public Result<List<Schedule>> findByDoctorId(int doctorId) {
+		Result<List<Schedule>> result = new Result<List<Schedule>>();
 		List<Schedule> scheduleList = scheduleRepo.findByDoctorId(doctorId);
 		if (scheduleList.isEmpty()) {
 			result.setMessage("Không có lịch hẹn khám bệnh");
@@ -44,8 +43,8 @@ public class ScheduleService {
 		return result;
 	}
 
-	public Result create(Schedule schedule) {
-		Result result = new Result();
+	public Result<Schedule> create(Schedule schedule) {
+		Result<Schedule> result = new Result<Schedule>();
 		int doctorId = schedule.getDoctor().getId();
 
 		// Kiểm tra bác sĩ có tồn tại trong cơ sở dữ liệu hay không
@@ -70,10 +69,9 @@ public class ScheduleService {
 		return result;
 	}
 
-	public Result update(Schedule schedule) {
-		Result result = new Result();
+	public Result<Schedule> update(Schedule schedule) {
+		Result<Schedule> result = new Result<Schedule>();
 		if (!scheduleRepo.findById(schedule.getId()).isPresent()) {
-			result.setStatus(Status.FAILED);
 			result.setMessage("Lịch hẹn không tồn tại");
 		} else {
 			result.setData(scheduleRepo.save(schedule));
@@ -81,11 +79,10 @@ public class ScheduleService {
 		return result;
 	}
 
-	public Result delete(int id) {
-		Result result = new Result();
+	public Result<Schedule> delete(int id) {
+		Result<Schedule> result = new Result<Schedule>();
 		Schedule schedule = scheduleRepo.findById(id).orElse(null);
 		if (schedule == null) {
-			result.setStatus(Status.FAILED);
 			result.setMessage("Lịch hẹn không tồn tại");
 		} else {
 			scheduleRepo.delete(schedule);

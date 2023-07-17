@@ -11,7 +11,6 @@ import com.haiyen.rehap.repository.ChatRoomRepository;
 import com.haiyen.rehap.repository.DoctorsRepository;
 import com.haiyen.rehap.repository.PatientsRepository;
 import com.haiyen.rehap.result.Result;
-import com.haiyen.rehap.result.Result.Status;
 
 @Service
 public class ChatRoomService {
@@ -24,8 +23,8 @@ public class ChatRoomService {
 	@Autowired
 	PatientsRepository patientsRepository;
 
-	public Result findByPatientId(int patientId) {
-		Result result = new Result();
+	public Result<List<ChatRoom>> findByPatientId(int patientId) {
+		Result<List<ChatRoom>> result = new Result<List<ChatRoom>>();
 		List<ChatRoom> chatList = chatRoomRepo.findByPatientId(patientId);
 		if (chatList.isEmpty()) {
 			result.setMessage("Không có hội thoại");
@@ -34,8 +33,8 @@ public class ChatRoomService {
 		return result;
 	}
 
-	public Result findByDoctorId(int doctorId) {
-		Result result = new Result();
+	public Result<List<ChatRoom>> findByDoctorId(int doctorId) {
+		Result<List<ChatRoom>> result = new Result<List<ChatRoom>>();
 		List<ChatRoom> chatList = chatRoomRepo.findByDoctorId(doctorId);
 		if (chatList.isEmpty()) {
 			result.setMessage("Không có hội thoại");
@@ -44,8 +43,8 @@ public class ChatRoomService {
 		return result;
 	}
 
-	public Result create(ChatRoom chatRoom) {
-		Result result = new Result();
+	public Result<ChatRoom> create(ChatRoom chatRoom) {
+		Result<ChatRoom> result = new Result<ChatRoom>();
 		// Lấy doctorId từ body request
 		int doctorId = chatRoom.getDoctor().getId();
 
@@ -71,11 +70,11 @@ public class ChatRoomService {
 		return result;
 	}
 
-	public Result delete(int id) {
-		Result result = new Result();
+	public Result<ChatRoom> delete(int id) {
+		Result<ChatRoom> result = new Result<ChatRoom>();
 		ChatRoom chatRoom = chatRoomRepo.findById(id).orElse(null);
 		if (chatRoom == null) {
-			result.setStatus(Status.FAILED);
+
 			result.setMessage("Hội thoại không tồn tại");
 		} else {
 			chatRoomRepo.delete(chatRoom);

@@ -1,27 +1,30 @@
-// package com.haiyen.rehap.exception;
+package com.haiyen.rehap.exception;
 
-// import
-// org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-// import org.springframework.http.HttpStatus;
-// import org.springframework.http.ResponseEntity;
-// import org.springframework.web.bind.annotation.ControllerAdvice;
-// import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-// @ControllerAdvice
-// public class GlobalExceptionHandler {
-// @ExceptionHandler(Exception.class)
-// public ResponseEntity<String> handleException(Exception ex) {
-// // Xử lý ngoại lệ và trả về mã lỗi và thông báo tương ứng
-// return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal
-// Server Error");
-// }
+@ControllerAdvice
+public class GlobalExceptionHandler {
 
-// @ExceptionHandler(NotFoundException.class)
-// public ResponseEntity<String> handleNotFoundException(NotFoundException ex) {
-// // Xử lý ngoại lệ NotFoundException và trả về mã lỗi và thông báo tương ứng
-// return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Not Found");
-// }
+    @ExceptionHandler(ExceptionResult.class)
+    public ResponseEntity<ExceptionJSONInfo> handleExceptionNew(ExceptionResult ex) {
+        ExceptionJSONInfo errorResponse;
+        if (ex.statusCode == HttpStatus.BAD_REQUEST) {
+            if (ex.getMessage().length() == 0) {
+                errorResponse = new ExceptionJSONInfo(HttpStatus.BAD_REQUEST.value(), "Error message");
+            } else {
+                errorResponse = new ExceptionJSONInfo(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+            }
 
-// // Thêm các phương thức handleException khác tùy theo nhu cầu xử lý ngoại lệ
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        } else
 
-// }
+        {
+            errorResponse = new ExceptionJSONInfo(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    "INTERNAL_SERVER_ERROR");
+            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+}

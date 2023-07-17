@@ -1,19 +1,28 @@
 package com.haiyen.rehap.result;
 
-public class Result {
-	private Status status = Status.SUCCESS;
-	private String message;
-	private Object data;
+import org.springframework.http.HttpStatus;
 
-	public enum Status {
-		SUCCESS, FAILED;
+public class Result<T> {
+	public Result() {
+
 	}
 
-	public Object getData() {
+	public Result(int statusCode, String message, T data) {
+		super();
+		this.statusCode = statusCode;
+		this.message = message;
+		this.data = data;
+	}
+
+	private int statusCode = HttpStatus.OK.value();
+	private String message = "success";
+	private T data;
+
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 
@@ -25,12 +34,12 @@ public class Result {
 		this.message = message;
 	}
 
-	public Status getStatus() {
-		return status;
+	public int getStatusCode() {
+		return statusCode;
 	}
 
-	public void setStatus(Status status) {
-		this.status = status;
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
 	}
 
 }

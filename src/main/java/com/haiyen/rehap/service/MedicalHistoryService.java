@@ -14,8 +14,8 @@ public class MedicalHistoryService {
 	@Autowired
 	MedicalHistoryRepository medicalHistoryRepo;
 
-	public Result findByPatientId(int patientId) {
-		Result result = new Result();
+	public Result<List<MedicalHistory>> findByPatientId(int patientId) {
+		Result<List<MedicalHistory>> result = new Result<List<MedicalHistory>>();
 		List<MedicalHistory> medicalHistoryList = medicalHistoryRepo.findByPatientId(patientId);
 		if (medicalHistoryList.isEmpty()) {
 			result.setMessage("Không có lịch sử khám bệnh");
