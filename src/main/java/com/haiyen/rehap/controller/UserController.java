@@ -44,13 +44,13 @@ public class UserController {
 
 	/* ---------------- CREATE NEW UserInfo ------------------------ */
 	@PostMapping("/users")
-	public ResponseEntity<Result<UserInfo>> create(@RequestBody UserInfo userInfo) {
+	public ResponseEntity<Result<UserInfo>> create(@RequestBody UserInfo userInfo) throws ExceptionResult {
 		return new ResponseEntity<Result<UserInfo>>(usersService.create(userInfo), HttpStatus.OK);
 	}
 
 	/* ---------------- UPDATE UserInfo ------------------------ */
 	@PutMapping("/users")
-	public ResponseEntity<Result<UserInfo>> update(@RequestBody UserInfo userInfo) {
+	public ResponseEntity<Result<UserInfo>> update(@RequestBody UserInfo userInfo) throws ExceptionResult {
 		return new ResponseEntity<Result<UserInfo>>(usersService.update(userInfo), HttpStatus.OK);
 	}
 

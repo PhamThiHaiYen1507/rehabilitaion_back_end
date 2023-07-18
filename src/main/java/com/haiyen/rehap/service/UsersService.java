@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.haiyen.rehap.entities.UserInfo;
@@ -34,25 +33,19 @@ public class UsersService {
 		return result;
 	}
 
-	public Result<UserInfo> create(UserInfo user) {
-		Result<UserInfo> result = new Result<UserInfo>();
-		if (userRepo.findUsersByPhoneNumber(user.getPhoneNumber()).isEmpty() == true) {
-			result.setData(userRepo.save(user));
-		} else {
-
-			result.setMessage("Số điện thoại đã tồn tại");
-		}
-		return result;
-	}
-
 	public Result<Boolean> checkPhoneNumber(String phoneNumber) throws ExceptionResult {
 		Result<Boolean> result = new Result<Boolean>();
 		try {
-			if (userRepo.findUsersByPhoneNumber(phoneNumber).isEmpty() == true) {
-				result.setData(userRepo.findUsersByPhoneNumber(phoneNumber).isEmpty());
-				;
+			UserInfo userPhoneNumber = userRepo.findUsersByPhoneNumber(phoneNumber);
+			if (userPhoneNumber == null) {
+				throw new ExceptionResult("Số điện thoại chưa được đăng ký với nhân viên bệnh viện",
+						HttpStatus.BAD_REQUEST);
 			} else {
-				throw new ExceptionResult("Số điện thoại đã được đăng ký", HttpStatus.BAD_REQUEST);
+				if (userPhoneNumber.getPassword() == null) {
+					result.setData(false);
+				} else {
+					result.setData(true);
+				}
 			}
 		} catch (Exception e) {
 			throw e;
@@ -60,13 +53,19 @@ public class UsersService {
 		return result;
 	}
 
-	public Result<UserInfo> update(UserInfo user) {
+	public Result<UserInfo> update(UserInfo user) throws ExceptionResult {
 		Result<UserInfo> result = new Result<UserInfo>();
-		if (!userRepo.findById(user.getId()).isPresent()) {
-			// result.setStatus(HttpStatus.OK);
-			result.setMessage("user Not Found");
+		UserInfo userPhoneNumber = userRepo.findUsersByPhoneNumber(user.getPhoneNumber());
+		if (userPhoneNumber == null) {
+			throw new ExceptionResult("Không tìm thấy người dùng", HttpStatus.BAD_REQUEST);
 		} else {
-			result.setData(userRepo.save(user));
+			if (user.getPassword().equals(userPhoneNumber.getPassword())) {
+				throw new ExceptionResult("Mật khẩu mới không được trùng với mật khẩu hiện tại",
+						HttpStatus.BAD_REQUEST);
+			} else {
+				userPhoneNumber.setPassword(user.getPassword());
+				result.setData(userRepo.save(userPhoneNumber));
+			}
 		}
 		return result;
 	}
@@ -84,15 +83,22 @@ public class UsersService {
 	}
 
 	public Result<UserInfo> login(UserInfo userInfo) throws ExceptionResult {
-		System.out.println(userInfo.getPhoneNumber() + userInfo.getPassword());
 		Result<UserInfo> result = new Result<UserInfo>();
 		UserInfo user = userRepo.login(userInfo.getPhoneNumber(), userInfo.getPassword());
+		UserInfo userPhoneNumber = userRepo.findUsersByPhoneNumber(userInfo.getPhoneNumber());
+
 		try {
-			if (user == null) {
-				throw new ExceptionResult("Số điện thoại hoặc mật khẩu không chính xác", HttpStatus.BAD_REQUEST);
+			if (userPhoneNumber == null) {
+				throw new ExceptionResult("Số điện thoại chưa được kích hoạt, vui lòng Đăng ký",
+						HttpStatus.BAD_REQUEST);
 			} else {
-				result.setData(user);
+				if (user == null) {
+					throw new ExceptionResult("Mật khẩu không chính xác", HttpStatus.BAD_REQUEST);
+				} else {
+					result.setData(user);
+				}
 			}
+
 		} catch (Exception e) {
 			throw e;
 		}
