@@ -70,6 +70,19 @@ public class UsersService {
 		return result;
 	}
 
+	public Result<UserInfo> create(UserInfo user) throws ExceptionResult {
+		Result<UserInfo> result = new Result<UserInfo>();
+		try {
+			UserInfo userInfo = userRepo.save(user);
+			result.setData(userInfo); 
+			result.setMessage("Người dùng đã được tạo thành công");
+		} catch (Exception e) {
+			result.setMessage("Lỗi khi tạo người dùng: " + e.getMessage());
+			throw new ExceptionResult("Lỗi khi tạo người dùng", e);
+		}
+		return result;
+	}
+
 	public Result<UserInfo> delete(int id) {
 		Result<UserInfo> result = new Result<UserInfo>();
 		UserInfo user = userRepo.findById(id).orElse(null);

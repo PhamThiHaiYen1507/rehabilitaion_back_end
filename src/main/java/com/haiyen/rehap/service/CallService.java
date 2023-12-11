@@ -15,13 +15,13 @@ import com.haiyen.rehap.result.Result;
 @Service
 public class CallService {
 	@Autowired
-	CallRepository callRepo;
+	private CallRepository callRepo;
 
 	@Autowired
-	DoctorsRepository doctorsRepository;
+	private DoctorsRepository doctorsRepository;
 
 	@Autowired
-	PatientsRepository patientsRepository;
+	private PatientsRepository patientsRepository;
 
 	public Result<List<Call>> findByPatientId(int patientId) {
 		Result<List<Call>> result = new Result<List<Call>>();
