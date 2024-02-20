@@ -21,9 +21,9 @@ public class DoctorsService {
 		return result;
 	}
 
-	public Result<DoctorInfo> findById(int id) {
+	public Result<DoctorInfo> findByUserId(int userId) {
 		Result<DoctorInfo> result = new Result<DoctorInfo>();
-		DoctorInfo doctor = doctorRepo.findById(id).orElse(null);
+		DoctorInfo doctor = doctorRepo.findByUserId(userId);
 		if (doctor == null) {
 			result.setMessage("Không tìm thấy bác sỹ");
 		}

@@ -21,9 +21,9 @@ public class PatientService {
         return result;
     }
 
-    public Result<PatientsInfo> findById(int id) {
+    public Result<PatientsInfo> findByUserId(int userId) {
         Result<PatientsInfo> result = new Result<PatientsInfo>();
-        PatientsInfo patientInfo = patientsRepo.findById(id).orElse(null);
+        PatientsInfo patientInfo = patientsRepo.findByUserId(userId);
         if (patientInfo == null) {
             result.setMessage("Không tìm thấy bệnh nhân");
         }

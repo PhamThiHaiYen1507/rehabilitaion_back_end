@@ -26,7 +26,7 @@ public class DoctorController {
 	}
 
 	@GetMapping("/doctors")
-	public ResponseEntity<Result<DoctorInfo>> findById(@RequestParam("id") int id) {
-		return new ResponseEntity<Result<DoctorInfo>>(doctorsService.findById(id), HttpStatus.OK);
+	public ResponseEntity<Result<DoctorInfo>> findById(@RequestParam("userId") int userId) {
+		return new ResponseEntity<Result<DoctorInfo>>(doctorsService.findByUserId(userId), HttpStatus.OK);
 	}
 }
